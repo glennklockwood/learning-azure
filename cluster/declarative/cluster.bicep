@@ -154,7 +154,7 @@ resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2022-03-
           ]
         }
       }
-      customData: base64(customData)
+      customData: loadFileAsBase64('./cloud-init.txt')
     }
   }
   dependsOn: [
