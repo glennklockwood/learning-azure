@@ -50,7 +50,12 @@
                 {
                     "name": "gloclusterSubnet",
                     "properties": {
-                        "addressPrefix": "10.3.0.0/24"
+                        "addressPrefix": "10.3.0.0/24",
+                        "serviceEndpoints": [
+                            {
+                                "service": "Microsoft.Storage"
+                            }
+                        ]
                     }
                 }
             ]
@@ -90,6 +95,15 @@
         },
         "customData": {
             "value": "#cloud-config\n package_upgrade: true\n packages:\n - clustershell\n - openmpi-bin\n - libopenmpi-dev\n - build-essential \n - git \n - libaio-dev \n - libboost-filesystem-dev \n - libboost-program-options-dev \n - libboost-thread-dev \n - libncurses-dev \n - libnuma-dev"
+        },
+        "storageAccountName": {
+            "value": "glockteststorage"
+        },
+        "storageAccountKind": {
+            "value": "BlockBlobStorage"
+        },
+        "storageAccountType": {
+            "value": "Premium_LRS"
         }
     }
 }
