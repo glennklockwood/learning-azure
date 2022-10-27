@@ -7,7 +7,7 @@
 set -ex
 
 if [[ $(uname) == Darwin ]]; then
-    source cluster-args.sh
+    source parameters.sh
 
     tunnel_iface="$(ifconfig | grep -A 2 utun | awk '/inet / {print $2}')"
 

@@ -5,7 +5,7 @@
 
 set -ex
 
-source cluster-args.sh
+source parameters.sh
 
 az group create --name $RG_NAME --location eastus
 
@@ -36,6 +36,6 @@ az vm list-ip-addresses --resource-group $RG_NAME \
 
 scp hosts.append ${ADMIN_USER}@${headnode_ip}:hosts.append
 
-scp cluster-args.sh setup-cluster.sh ${ADMIN_USER}@${headnode_ip}:
+scp parameters.sh setup-cluster.sh ${ADMIN_USER}@${headnode_ip}:
 
 ssh ${ADMIN_USER}@${headnode_ip} "./setup-cluster.sh"

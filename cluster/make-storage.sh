@@ -4,7 +4,7 @@
 # NFS as a shared file system. It also adds the service endpoint to an existing
 # cluster vnet.
 
-source cluster-args.sh
+source parameters.sh
 
 VNET_NAME="$(az network vnet list -g $RG_NAME --query '[].name | [0]' | sed -e 's/"//g')"
 SUBNET_NAME="$(az network vnet subnet list --resource-group $RG_NAME --vnet-name $VNET_NAME --query '[].name | [0]' | sed -e 's/"//g')"

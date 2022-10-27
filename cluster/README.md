@@ -7,7 +7,7 @@ Azure][1] and has tools to provision an Azure cluster in two different ways:
 
 This uses the Azure CLI and relies on
 
-- cluster-args.sh - global configuration parameters for the cluster
+- parameters.sh - global configuration parameters for the cluster
 - make-cluster.sh - creates the compute nodes, virtual network, etc
 - cloud-init.txt - provides minimum software environment to provisioned nodes
 - setup-cluster.sh - script that runs on the head node to do post-provision setup

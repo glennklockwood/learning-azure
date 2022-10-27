@@ -3,7 +3,7 @@
 # This script is meant to be run from the head node of the cluster after the
 # cluster is already provisioned.
 
-source cluster-args.sh
+source parameters.sh
 
 WORK_DIR=$HOME
 
