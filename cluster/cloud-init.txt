@@ -1,0 +1,14 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - clustershell
+  - openmpi-bin
+  - libopenmpi-dev
+  - build-essential 
+  - git 
+  - libaio-dev 
+  - libboost-filesystem-dev 
+  - libboost-program-options-dev 
+  - libboost-thread-dev 
+  - libncurses-dev 
+  - libnuma-dev 
