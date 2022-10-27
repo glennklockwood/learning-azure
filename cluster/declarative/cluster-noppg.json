@@ -17,9 +17,6 @@
         "networkSecurityGroupRules": {
             "type": "array"
         },
-        "ppgName": {
-            "type": "string"
-        },
         "subnetName": {
             "type": "string"
         },
@@ -158,31 +155,14 @@
             }
         },
         {
-            "name": "[parameters('ppgName')]",
-            "type": "Microsoft.Compute/proximityPlacementGroups",
-            "apiVersion": "2022-08-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "intent": {
-                    "vmSizes": [
-                        "[parameters('virtualMachineSize')]"
-                    ]
-                }
-            }
-        },
-        {
             "name": "[concat(parameters('virtualMachineName'), copyIndex())]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2022-03-01",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'), copyIndex())]",
-                "[concat('Microsoft.Compute/proximityPlacementGroups/', parameters('ppgName'))]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'), copyIndex())]"
             ],
             "properties": {
-                "proximityPlacementGroup": {
-                    "id": "[resourceId('Microsoft.Compute/proximityPlacementGroups', parameters('ppgName'))]"
-                },
                 "hardwareProfile": {
                     "vmSize": "[parameters('virtualMachineSize')]"
                 },
