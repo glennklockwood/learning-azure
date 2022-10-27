@@ -31,6 +31,9 @@
                 }
             ]
         },
+        "ppgName": {
+            "value": "glocktestppg"
+        },
         "subnetName": {
             "value": "gloclusterSubnet"
         },
