@@ -1,0 +1,106 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "networkInterfaceName": {
+            "value": "gloclusterVMNic"
+        },
+        "enableAcceleratedNetworking": {
+            "value": true
+        },
+        "networkSecurityGroupName": {
+            "value": "gloclusterNSG"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                }
+            ]
+        },
+        "subnetName": {
+            "value": "gloclusterSubnet"
+        },
+        "virtualNetworkName": {
+            "value": "gloclusterVNET"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.3.0.0/16"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "gloclusterSubnet",
+                    "properties": {
+                        "addressPrefix": "10.3.0.0/24",
+                        "serviceEndpoints": [
+                            {
+                                "service": "Microsoft.Storage"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "publicIpAddressName": {
+            "value": "gloclusterPublicIP"
+        },
+        "publicIpAddressType": {
+            "value": "Static"
+        },
+        "publicIpAddressSku": {
+            "value": "Standard"
+        },
+        "pipDeleteOption": {
+            "value": "Detach"
+        },
+        "virtualMachineName": {
+            "value": "glocluster"
+        },
+        "virtualMachineComputerName": {
+            "value": "glocluster"
+        },
+        "virtualMachineRG": {
+            "value": "glocktestrg"
+        },
+        "osDiskType": {
+            "value": "Standard_LRS"
+        },
+        "osDiskDeleteOption": {
+            "value": "Delete"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_D32_v5"
+        },
+        "nicDeleteOption": {
+            "value": "Detach"
+        },
+        "customData": {
+            "value": "#cloud-config\n package_upgrade: true\n packages:\n - clustershell\n - openmpi-bin\n - libopenmpi-dev\n - build-essential \n - git \n - libaio-dev \n - libboost-filesystem-dev \n - libboost-program-options-dev \n - libboost-thread-dev \n - libncurses-dev \n - libnuma-dev"
+        },
+        "storageAccountKind": {
+            "value": "BlockBlobStorage"
+        },
+        "storageAccountType": {
+            "value": "Premium_LRS"
+        },
+        "numClients": {
+            "value": 1
+        }
+    }
+}
