@@ -1,3 +1,7 @@
+/*
+ az group create -g glocktestrg --location eastus
+ az deployment group create --template-file blobnfs.bicep --parameters parameters.json -g glocktestrg
+*/
 param location string
 param networkInterfaceName string
 param enableAcceleratedNetworking bool
@@ -13,7 +17,6 @@ param publicIpAddressSku string
 param pipDeleteOption string
 param virtualMachineName string
 param virtualMachineComputerName string
-param virtualMachineRG string
 param osDiskType string
 param osDiskDeleteOption string
 param virtualMachineSize string
@@ -25,16 +28,10 @@ param storageAccountKind string
 param numClients int
 
 @secure()
-param customData string
 param sshPublicKey string
 
-var nsgId = resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', networkSecurityGroupName)
-var vnetName = virtualNetworkName
-var vnetId = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks', virtualNetworkName)
-var subnetRef = '${vnetId}/subnets/${subnetName}'
-
-resource networkInterfaceName_resource 'Microsoft.Network/networkInterfaces@2021-03-01' = [for i in range(0, numClients): {
-  name: concat(networkInterfaceName, i)
+resource clientNetworkInterface 'Microsoft.Network/networkInterfaces@2021-03-01' = [for i in range(0, numClients): {
+  name: '${networkInterfaceName}${i}'
   location: location
   properties: {
     ipConfigurations: [
@@ -42,11 +39,11 @@ resource networkInterfaceName_resource 'Microsoft.Network/networkInterfaces@2021
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: subnetRef
+            id: resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, subnetName)
           }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            id: concat(resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', publicIpAddressName), i)
+            id: resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', '${publicIpAddressName}${i}')
             properties: {
               deleteOption: pipDeleteOption
             }
@@ -56,13 +53,13 @@ resource networkInterfaceName_resource 'Microsoft.Network/networkInterfaces@2021
     ]
     enableAcceleratedNetworking: enableAcceleratedNetworking
     networkSecurityGroup: {
-      id: nsgId
+      id: resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', networkSecurityGroupName)
     }
   }
   dependsOn: [
     networkSecurityGroupName_resource
     virtualNetworkName_resource
-    publicIpAddressName_resource[i]
+    clientPublicIpAddress[i]
   ]
 }]
 
@@ -74,7 +71,7 @@ resource networkSecurityGroupName_resource 'Microsoft.Network/networkSecurityGro
   }
 }
 
-resource virtualNetworkName_resource 'Microsoft.Network/virtualNetworks@2021-01-01' = {
+resource virtualNetworkName_resource 'Microsoft.Network/virtualNetworks@2022-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -85,8 +82,8 @@ resource virtualNetworkName_resource 'Microsoft.Network/virtualNetworks@2021-01-
   }
 }
 
-resource publicIpAddressName_resource 'Microsoft.Network/publicIpAddresses@2020-08-01' = [for i in range(0, numClients): {
-  name: concat(publicIpAddressName, i)
+resource clientPublicIpAddress 'Microsoft.Network/publicIpAddresses@2020-08-01' = [for i in range(0, numClients): {
+  name: '${publicIpAddressName}${i}'
   location: location
   properties: {
     publicIPAllocationMethod: publicIpAddressType
@@ -96,8 +93,8 @@ resource publicIpAddressName_resource 'Microsoft.Network/publicIpAddresses@2020-
   }
 }]
 
-resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2022-03-01' = [for i in range(0, numClients): {
-  name: concat(virtualMachineName, i)
+resource computeNode 'Microsoft.Compute/virtualMachines@2022-03-01' = [for i in range(0, numClients): {
+  name: '${virtualMachineName}${i}'
   location: location
   properties: {
     hardwareProfile: {
@@ -121,7 +118,7 @@ resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2022-03-
     networkProfile: {
       networkInterfaces: [
         {
-          id: concat(resourceId('Microsoft.Network/networkInterfaces', networkInterfaceName), i)
+          id: resourceId(resourceGroup().name, 'Microsoft.Network/networkInterfaces', '${networkInterfaceName}${i}')
           properties: {
             deleteOption: nicDeleteOption
           }
@@ -129,7 +126,7 @@ resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2022-03-
       ]
     }
     osProfile: {
-      computerName: concat(virtualMachineComputerName, i)
+      computerName: '${virtualMachineComputerName}${i}'
       adminUsername: adminUsername
       linuxConfiguration: {
         disablePasswordAuthentication: true
@@ -146,7 +143,7 @@ resource virtualMachineName_resource 'Microsoft.Compute/virtualMachines@2022-03-
     }
   }
   dependsOn: [
-    networkInterfaceName_resource[i]
+    clientNetworkInterface[i]
   ]
 }]
 
@@ -160,7 +157,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
       ipRules: []
       virtualNetworkRules: [
         {
-          id: subnetRef
+          id: resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, subnetName)
         }
       ]
     }
