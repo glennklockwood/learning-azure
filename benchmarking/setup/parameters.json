@@ -75,9 +75,6 @@
         "virtualMachineComputerName": {
             "value": "glocluster"
         },
-        "virtualMachineRG": {
-            "value": "glocktestrg"
-        },
         "osDiskType": {
             "value": "Standard_LRS"
         },
@@ -89,9 +86,6 @@
         },
         "nicDeleteOption": {
             "value": "Detach"
-        },
-        "customData": {
-            "value": "#cloud-config\n package_upgrade: true\n packages:\n - clustershell\n - openmpi-bin\n - libopenmpi-dev\n - build-essential \n - git \n - libaio-dev \n - libboost-filesystem-dev \n - libboost-program-options-dev \n - libboost-thread-dev \n - libncurses-dev \n - libnuma-dev"
         },
         "storageAccountKind": {
             "value": "BlockBlobStorage"
