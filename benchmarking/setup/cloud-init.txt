@@ -1,0 +1,50 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - clustershell
+  - openmpi-bin
+  - libopenmpi-dev
+  - build-essential 
+  - git 
+  - libaio-dev 
+  - libboost-filesystem-dev 
+  - libboost-program-options-dev 
+  - libboost-thread-dev 
+  - libncurses-dev 
+  - libnuma-dev 
+  - python3-pip
+  - nfs-common
+write_files:
+  - path: /etc/vimrc
+    content: |
+        if &term == "xterm-256color"
+            set t_Co=256
+        endif
+        syntax on
+        set background=dark
+        if has("autocmd")
+          au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+            \| exe "normal g'\"" | endif
+        endif
+        set showmatch       " show matching brackets - can be really slow on older systems
+        set viminfo='20,<50 " '20 = remember marks for last 20 files opened
+        set history=50      " remember 50 commands in command history
+        set ruler           " enable ruler at bottom right
+        set hlsearch        " highlight matching text on search (can be slow)
+        set tabstop=4       " tabs are four characters wide, not default 8
+        set shiftwidth=4    " same as tabstop, but for > and < (block indent)
+        set expandtab       " don't be a heathen--tab key inserts spaces
+        set nowrap          " don't wrap long lines
+        set backspace=indent,eol,start " backspace beyond where you entered insert mode
+        set autoindent      " use 'set paste' to paste in code that has indents
+        set list listchars=precedes:<,extends:>
+        " make comments dark, always
+        if &term == "xterm-256color"
+            hi Comment ctermfg=240
+        else
+            hi Comment ctermfg=0
+            if &diff
+                " force 16-bit color so vimdiff is readable
+                set t_Co=16
+            endif
+        endif
